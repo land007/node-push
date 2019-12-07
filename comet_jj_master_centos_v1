@@ -1,0 +1,41 @@
+#! /bin/sh
+
+NODE_ENV=production
+PORT=8000
+MASTER="http://push.app.jj.cn:8088/mupush/interface/getProduct.do?callback=c&type=2"
+DAEMON="./node bs_start_v1.js comet_jj_master_v1.js bs_start_v1.js comet_jj_v1.js $PORT $MASTER"
+NAME=comet
+PIDFILE="comet_jj.pid"
+OUTFILE="comet_jj_%Y%m%d.out"
+CLOG="./cronolog"
+
+case "$1" in
+	start)
+		if [ ! -f "$PIDFILE" ]; then
+			netstat -an |grep 0.0.0.0:$PORT
+			echo "starting $NAME. "
+			nohup $DAEMON | $CLOG $OUTFILE &
+			echo $! > $PIDFILE
+			echo "started $!."
+		else
+			echo "$NAME started."
+		fi
+				;;
+	stop)
+		if [ ! -f "$PIDFILE" ]; then
+			echo "$NAME not start."
+		else
+			echo "stopping $NAME: "
+			pid=`cat $PIDFILE`
+			kill $pid
+			rm $PIDFILE
+			echo "stoped $pid."
+		fi
+			;;
+	kill)
+		killall -9 ./node
+		rm $PIDFILE
+			;;
+esac
+
+exit 0;

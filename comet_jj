@@ -1,0 +1,54 @@
+#! /bin/sh
+
+NODE_ENV=production
+PORT=8000
+MASTER="http://push.app.jj.cn:8088/mupush/interface/getProduct.do?callback=c&type=2"
+
+SYSTEM=`uname -s`
+if [ $SYSTEM = "Linux" ] ; then #"FreeBSD","Solaris"
+	echo "Linux"
+	NODE=node
+elif [ $SYSTEM = "Darwin" ] ; then
+	echo "Darwin"
+	NODE=node_mac
+else
+	echo "What System?"
+	NODE=node
+fi
+
+DAEMON="./$NODE comet_jj.js $PORT $MASTER"
+NAME=comet
+PIDFILE="comet_jj.pid"
+OUTFILE="comet_jj.out"
+
+case "$1" in
+	start)
+		if [ ! -f "$PIDFILE" ]; then
+			netstat -an |grep *.$PORT
+			echo "starting $NAME. "
+			nohup $DAEMON > $OUTFILE &
+			echo $! > $PIDFILE
+			echo "started $!."
+			tail -f $OUTFILE
+		else
+			echo "$NAME started."
+		fi
+				;;
+	stop)
+		if [ ! -f "$PIDFILE" ]; then
+			echo "$NAME not start."
+		else
+			echo "stopping $NAME: "
+			pid=`cat $PIDFILE`
+			kill $pid
+			rm $PIDFILE
+			echo "stoped $pid."
+		fi
+			;;
+	kill)
+		killall -9 $NODE
+		rm $PIDFILE
+			;;
+esac
+
+exit 0;

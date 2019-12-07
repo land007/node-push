@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Strict//EN' 'http://www.w3.org/TR/html4/strict.dtd'>
+<html>
+<head>
+<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
+<title>测试</title>
+</head>
+<body>
+	<div>
+		群发消息：
+		<form action="/send" target='showed'>
+			<div>
+				token:
+				<input name="token" value="0ddd5b73bc654443bfdbc07d7d726a0d">
+			</div>
+			<div>
+				msg:
+				<textarea name="msg"></textarea>
+			</div>
+			<div>
+				<input type="submit">
+			</div>
+		</form>
+	</div>
+	<div>
+		精准消息：
+		<form action="/sendUserMsg" method="post" target='showed'>
+			<div>
+				token:
+				<input name="token" value="0ddd5b73bc654443bfdbc07d7d726a0d">
+			</div>
+			<div>
+				userid:
+				<input name="userid" value="jiayq">
+			</div>
+			<div>
+				msg:
+				<textarea name="msg"></textarea>
+			</div>
+			<div>
+				<input type="submit">
+			</div>
+		</form>
+	</div>
+	<div>
+		绑定用户：
+		<form action="/signUser" target='showed'>
+			<div>
+				uuid:
+				<input name="uuid" value="5b1c35df-62c0-421b-833d-0ba126ad5b6f">
+			</div>
+			<div>
+				userid:
+				<input name="userid" value="jiayq">
+			</div>
+			<div>
+				<input type="submit">
+			</div>
+		</form>
+	</div>
+	<div>
+		解绑用户：
+		<form action="/signOut" target='showed'>
+			<div>
+				uuid:
+				<input name="uuid" value="5b1c35df-62c0-421b-833d-0ba126ad5b6f">
+			</div>
+			<div>
+				<input type="submit">
+			</div>
+		</form>
+	</div>
+	<div>
+		订阅消息：
+		<form action="/fire" target='showed'>
+			<div>
+				uuid:
+				<input name="uuid" value="5b1c35df-62c0-421b-833d-0ba126ad5b6f">
+			</div>
+			<div>
+				<input type="submit">
+			</div>
+		</form>
+	</div>
+	<div>
+		退订消息：
+		<form action="/misfiring" target='showed'>
+			<div>
+				uuid:
+				<input name="uuid" value="5b1c35df-62c0-421b-833d-0ba126ad5b6f">
+			</div>
+			<div>
+				<input type="submit">
+			</div>
+		</form>
+	</div>
+	<div>
+		销毁消息：
+		<form action="/destroy/msg" target='showed'>
+			<div>
+				msgid:
+				<input name="id" value="">
+			</div>
+			<div>
+				uuid:
+				<input name="uuid" value="5b1c35df-62c0-421b-833d-0ba126ad5b6f">
+			</div>
+			<div>
+				<input type="submit">
+			</div>
+		</form>
+	</div>
+	<iframe name="showed"></iframe>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Comet</title>
+<script src='/_ah/channel/jsapi'></script>
+<script>
+	//var token = 'a228de15-50bf-4f03-9eb1-9aa83a128fcb';
+	var channelName = 'PsMonkey';
+	var token = null;
+// 	var channelName = 'androidHelperDev';
+	
+	var messageTemplate = {
+			"aps" : {
+				"alert" : {
+					"title" : "",
+					"body" : "",
+					"time" : 0//1392968384587
+				},
+				"sound" : "default",
+				"expand" : {"type": "","args":{}},
+				//升级{"type": "jjhahaupdate","args":{"version":"1.0.0","url":"https://itunes.apple.com/us/app/wine-spectator-wineratings+/id381341648?mt=8"}}
+				//开贴{"type": "jjhahatip","args":{"nid":100}}
+				//链接{"type": "jjhahahref","args":{"url":"http://www.baidu.com"}}
+				//消息{"type": "jjmessage","args":{"nid":"905", "cid":"2938"}}
+				"time" : 0//1392968384587
+			}
+		};
+	
+	sendMessage = function(message) {
+		if(token != null) {
+			var xhr = new XMLHttpRequest();
+			xhr.open('GET', 'send?token='+token+'&out=30000&msg='+encodeURI(message), true);//{"aps":{"alert":{"body":"哈哈看图：fdsfsdfsdfsdf"},"sound":"default"},"url":"http://www.jj.cn"}
+			xhr.send();
+		}
+	};
+	
+	send = function(){
+		if(token != null) {
+			var sentence = document.getElementById("sentence");
+			var _message = sentence.value;
+			if(true){
+				messageTemplate.aps.alert.body = _message;
+				messageTemplate.aps.time = new Date().getTime();
+				messageTemplate.aps.expand.type = "jjhahatip";
+				messageTemplate.aps.expand.args["nid"] = 13;
+				_message = JSON.stringify(messageTemplate);
+//	 			_message = _message.replace(new RegExp(',', 'g'),'<，>');
+//	 			_message = _message.replace(new RegExp('"', 'g'),'<“>');
+			}
+			//console.log(_message);
+			sendMessage(_message);
+			sentence.value = "";
+		}
+	}
+
+    function appendToArea(msg) {
+        var textArea = document.getElementById('data');
+        textArea.value = textArea.value + msg + '\n';
+        textArea.scrollTop = textArea.scrollHeight;
+    }
+
+    function jsonp(url){
+    	var JSONP = document.createElement("script") ;
+        JSONP.type = "text/javascript";
+        JSONP.src = url;
+        document.getElementsByTagName("head")[0].appendChild(JSONP);
+    }
+    
+    function getToken(data) {
+    	token = data.token;
+    	var channel = new goog.appengine.Channel(data.token);
+    	var handler = {
+    		'onopen' : onOpened,
+    		'onmessage' : onMessage,
+    		'onerror' : onError,
+    		'onclose' : onClosed,
+    	};
+    	socket = channel.open(handler);
+    }
+    
+    onOpened = function() {
+    	//sendMessage("「"+name + "」進入聊天室......");
+    };
+
+    onMessage = function(msg) {
+    	var textArea = document.getElementById('data');
+        textArea.value = textArea.value + msg.data + '\n';
+        textArea.scrollTop = textArea.scrollHeight;
+    	//document.getElementById("output").innerHTML += "<div>"+msg.data +"</div>";
+    }
+
+    onError = function(e){
+//     	alert(
+//     		"發生什麼事了？居然有 error......name,fail\n"+
+//     		"Exception Description : "+e.description+"\n"+
+//     		"Exception Code : "+e.code
+//     	);
+    }
+
+    onClosed = function(){
+    	sendMessage("「"+name + "」離開聊天室......");
+    }
+    
+    jsonp('/apply?&callback=getToken&channelName=' + channelName);
+    
+    function strdown(event){
+	    if(event.keyCode==13 && !event.shiftKey){
+	    	send();
+	        return false;
+	    }
+	}
+</script>
+</head>
+<body onkeydown="strdown(event)">
+<textarea id="data" style="width:200px;height:330px;"></textarea>
+<input id="sentence" type="text">
+<button onclick="send();">提 交</button>
+</body>
+</html>

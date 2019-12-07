@@ -1,0 +1,43 @@
+#! /bin/sh
+
+NODE_ENV=production
+PORT=8000
+MASTER="http://push.app.jj.cn:8088/mupush/interface/getProduct.do?callback=c&type=2"
+DAEMON="/Volumes/jiayq/Downloads/Source/node-v0.10.13/out/Release/node bs_start_v2.js ./comet_jj_master_v2.js bs_start_v2.js ./comet_jj_v2.js $PORT $MASTER"
+NAME=comet
+PIDFILE="comet_jj_master_v2.pid"
+OUTFILE="%Y%m%d_comet_jj_master_v2.out"
+CLOG="/usr/local/Cellar/cronolog/1.6.2/sbin/cronolog"
+
+case "$1" in
+	start)
+		if [ ! -f "$PIDFILE" ]; then
+			netstat -an |grep *.$PORT
+			echo "starting $NAME. "
+			#nohup $DAEMON > $OUTFILE &
+			nohup $DAEMON | $CLOG $OUTFILE &
+			echo $! > $PIDFILE
+			echo "started $!."
+			#tail -f $OUTFILE
+		else
+			echo "$NAME started."
+		fi
+				;;
+	stop)
+		if [ ! -f "$PIDFILE" ]; then
+			echo "$NAME not start."
+		else
+			echo "stopping $NAME: "
+			pid=`cat $PIDFILE`
+			kill $pid
+			rm $PIDFILE
+			echo "stoped $pid."
+		fi
+			;;
+	kill)
+		killall -9 node
+		rm $PIDFILE
+			;;
+esac
+
+exit 0;

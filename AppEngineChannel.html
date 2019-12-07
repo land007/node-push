@@ -1,0 +1,41 @@
+<html>
+    <head><title>AppEngineChannel</title></head>
+    <body>
+        <script src="/_ah/channel/jsapi"></script>
+        <script>
+            var queue  = [];
+            var iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = 'appenginechannel://ready';
+            
+            var fetch = function() {
+                if(iframe.parentNode) {
+                    iframe.parentNode.removeChild(iframe);
+                }
+                
+                var json = JSON.stringify(queue);
+                queue.length = 0;
+                return json;
+            };
+            
+            var dispatch = function(command, params) {
+                queue.push([command, params]);
+                
+                if(!iframe.parentNode) {
+                    document.body.appendChild(iframe);
+                }
+            };
+            
+            var channel = new goog.appengine.Channel('AHRlWrpNWFYtAArqSsowDEA4PC2QDqYDGC0Rqd8nsSlDkV81BZaitZ_8zYawO_4tokRI3rQ7_dx-cbc1XnVbXeIcxfxD81EyLq0qcvxhg_qnSS5HB_wXBhQ');
+            var dispatch = function(title, content){
+            	console.log(title + ' ' + content);
+            }
+            var socket = channel.open({
+                onmessage: function(data ) { dispatch('onmessage', data ); },
+                onerror:   function(error) { dispatch('onerror',   error); },
+                onopen:    function()      { dispatch('onopen'          ); },
+                onclose:   function()      { dispatch('onclose'         ); }
+            });
+        </script>
+    </body>
+</html>
